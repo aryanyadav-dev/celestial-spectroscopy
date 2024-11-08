@@ -1,10 +1,10 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers, models
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report, precision_score, recall_score, f1_score
+from textblob import TextBlob  
 import matplotlib.pyplot as plt
 
 class SpectralClassifier:
@@ -71,63 +71,49 @@ class SpectralClassifier:
     def train_and_visualize(self, X_train, y_train, X_val, y_val, epochs=20):
         """Train model and show progress"""
         print("\nTraining the model...")
-
-        # EarlyStopping and ModelCheckpoint callbacks
-        early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-        model_checkpoint = ModelCheckpoint('spectral_model_best.keras', monitor='val_accuracy', save_best_only=True)
-        tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1)
-
+        
         history = self.model.fit(
             X_train, y_train,
             validation_data=(X_val, y_val),
             epochs=epochs,
             batch_size=32,
-            verbose=1,
-            callbacks=[early_stopping, model_checkpoint, tensorboard]
+            verbose=1
         )
 
-        # Visualize the training history
-        self._plot_training_history(history)
+        # Plot training history
+        plt.figure(figsize=(12, 4))  # Bigger figure for clearer view
 
-    def _plot_training_history(self, history):
-        """Plot training and validation accuracy/loss"""
-        # Accuracy plot
-        plt.figure(figsize=(14, 7))  # Increased figure size for better visibility
+        # Plot Accuracy
         plt.subplot(1, 2, 1)
-        plt.plot(history.history['accuracy'], label='Train Accuracy')
-        plt.plot(history.history['val_accuracy'], label='Test Accuracy')
+        plt.plot(history.history['accuracy'], label='Training')
+        plt.plot(history.history['val_accuracy'], label='Validation')
         plt.title('Model Accuracy', fontsize=14)
-        plt.xlabel('Epochs', fontsize=12)
+        plt.xlabel('Epoch', fontsize=12)
         plt.ylabel('Accuracy', fontsize=12)
         plt.legend()
 
-        # Loss plot
+        # Plot Loss
         plt.subplot(1, 2, 2)
-        plt.plot(history.history['loss'], label='Train Loss')
-        plt.plot(history.history['val_loss'], label='Test Loss')
+        plt.plot(history.history['loss'], label='Training')
+        plt.plot(history.history['val_loss'], label='Validation')
         plt.title('Model Loss', fontsize=14)
-        plt.xlabel('Epochs', fontsize=12)
+        plt.xlabel('Epoch', fontsize=12)
         plt.ylabel('Loss', fontsize=12)
         plt.legend()
 
-        plt.tight_layout()
-        plt.show()
+        plt.tight_layout()  # Adjust layout to fit the subplots nicely
+        plt.show()  # Display the plot
 
     def evaluate_model(self, X_test, y_test):
         """Evaluate model performance on test set"""
-        # Get predictions from the model
         y_pred = self.model.predict(X_test)
-        
-        # Get the class with the highest probability (argmax)
         y_pred_classes = np.argmax(y_pred, axis=1)
         y_test_classes = np.argmax(y_test, axis=1)
 
-        # Confusion Matrix
         cm = confusion_matrix(y_test_classes, y_pred_classes)
         print("\nConfusion Matrix:")
         print(cm)
         
-        # Classification Report
         cr = classification_report(y_test_classes, y_pred_classes, target_names=['star', 'galaxy'])
         print("\nClassification Report:")
         print(cr)
@@ -142,31 +128,28 @@ class SpectralClassifier:
         print(f"Recall: {recall:.4f}")
         print(f"F1 Score: {f1:.4f}")
 
-        # Plot Confusion Matrix
-        plt.figure(figsize=(8, 8))  # Larger figure for confusion matrix
-        plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
-        plt.title("Confusion Matrix", fontsize=14)
-        plt.colorbar()
-        tick_marks = np.arange(self.num_classes)
-        plt.xticks(tick_marks, ['Star', 'Galaxy'], rotation=45, fontsize=12)
-        plt.yticks(tick_marks, ['Star', 'Galaxy'], fontsize=12)
-        plt.ylabel('True label', fontsize=12)
-        plt.xlabel('Predicted label', fontsize=12)
-        plt.tight_layout()
-        plt.show()
+        # Display sentiment analysis for each class
+        self.sentiment_analysis(['star', 'galaxy'])
 
         return cm, cr, precision, recall, f1
 
+    def sentiment_analysis(self, labels):
+        """Perform sentiment analysis on given labels"""
+        print("\nSentiment Analysis:")
+        for label in labels:
+            sentiment = "positive" if label == "star" else "neutral"
+            print(f"Sentiment for '{label}': {sentiment}")
+
     def plot_sample_spectra(self, spectra, labels, num_samples=5):
         """Plot sample spectra with labels"""
-        plt.figure(figsize=(12, 8))  # Increase figure size for better visibility
+        plt.figure(figsize=(12, 8)) 
 
         for i in range(num_samples):
-            plt.subplot(num_samples, 1, i + 1)  # Placing the plots vertically
-            plt.plot(spectra[i])  # Plot the spectrum (flux vs wavelength)
-            plt.title(f"Sample {i + 1}: {labels[i]}", fontsize=14)  # Title with label
-            plt.xlabel("Wavelength", fontsize=12)  # Label for x-axis
-            plt.ylabel("Flux", fontsize=12)  # Label for y-axis
+            plt.subplot(num_samples, 1, i + 1) 
+            plt.plot(spectra[i])  
+            plt.title(f"Sample {i + 1}: {labels[i]}", fontsize=14)  
+            plt.xlabel("Wavelength", fontsize=12)  
+            plt.ylabel("Flux", fontsize=12) 
 
-        plt.tight_layout()  # Adjust layout to prevent overlapping
-        plt.show()  # Display the plot
+        plt.tight_layout()  
+        plt.show()  
