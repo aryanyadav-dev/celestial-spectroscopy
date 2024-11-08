@@ -10,7 +10,7 @@ This project is designed to classify spectral data using a convolutional neural 
 - **Model Training and Visualization**: The training process includes callbacks like EarlyStopping, ModelCheckpoint, and TensorBoard, and the training history (accuracy and loss) is visualized.
 - **Evaluation**: The model evaluates the performance on test data using metrics such as precision, recall, F1 score, and provides a confusion matrix and classification report.
 - **Sample Spectra Visualization**: The classifier also allows plotting sample spectra with their corresponding labels.
-- **Sentiment Analysis: Helps to understand whether it a star or a galaxy by positive or neutral sentiment.
+- **Sentiment Analysis**: Helps to understand whether it a star or a galaxy by positive or neutral sentiment.
 
 ## Installation
 
