@@ -72,4 +72,4 @@ def get_spectral_data():
 
 if __name__ == '__main__':
     run_spectral_classification()
-    app.run(debug=True)
+    app.run(debug=False)
