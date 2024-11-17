@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"app/page.tsx -> ./spectral-dashboard\":{\"id\":\"app/page.tsx -> ./spectral-dashboard\",\"files\":[\"static/chunks/_app-pages-browser_app_spectral-dashboard_tsx.js\"]}}"

@@ -1,0 +1,24 @@
+{
+    "name": "spectral-dashboard",
+    "version": "1.0.0",
+    "scripts": {
+      "dev": "concurrently \"npm run next-dev\" \"npm run flask-dev\"",
+      "next-dev": "next dev",
+      "flask-dev": "python spectral_classifier/main.py",
+      "build": "next build",
+      "start": "next start"
+    },
+    "dependencies": {
+      "next": "latest",
+      "react": "latest",
+      "react-dom": "latest",
+      "recharts": "^2.5.0",
+      "lucide-react": "^0.220.0"
+    },
+    "devDependencies": {
+      "@types/node": "^18.11.9",
+      "@types/react": "^18.0.25",
+      "concurrently": "^7.6.0",
+      "typescript": "^4.9.3"
+    }
+  }
